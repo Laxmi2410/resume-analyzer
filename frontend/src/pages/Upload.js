@@ -49,7 +49,8 @@ function Upload() {
     formData.append('job_description', jd);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/analyze', formData, {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/analyze`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       navigate('/results', { state: { results: response.data } });

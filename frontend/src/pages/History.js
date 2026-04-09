@@ -10,7 +10,9 @@ function History() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/history');
+        // Use environment variable if it exists, otherwise use localhost
+        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+        const res = await axios.get(`${apiUrl}/api/history`);
         setHistory(res.data);
       } catch (err) {
         setError('Failed to fetch history from the database.');
