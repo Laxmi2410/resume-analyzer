@@ -6,6 +6,10 @@ from nlp_processor import analyze_resume_vs_jd
 import io
 import json
 import os
+import nltk
+nltk.download('stopwords')
+
+from nltk.corpus import stopwords
 
 app = Flask(__name__)
 # Database config
