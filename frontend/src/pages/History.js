@@ -11,7 +11,7 @@ function History() {
     const fetchHistory = async () => {
       try {
         // Use environment variable if it exists, otherwise use localhost
-        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://resume-analyzer.onrender.com/api/analyze';
         const res = await axios.get(`${apiUrl}/api/history`);
         setHistory(res.data);
       } catch (err) {
