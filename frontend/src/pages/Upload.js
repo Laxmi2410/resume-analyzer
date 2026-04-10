@@ -53,14 +53,14 @@ function Upload() {
       const apiUrl = "https://resume-analyzer.onrender.com";
 
       const response = await axios.post(
-        `${apiUrl}/api/analyze`,
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        }
-      );
+  "https://resume-analyzer.onrender.com/api/analyze",
+  formData,
+  {
+    headers: { "Content-Type": "multipart/form-data" }
+  }
+);
 
-      console.log(response.data);
+console.log(response.data);
 
       // ✅ Safe navigation (no crash)
       navigate('/results', { state: { results: response.data || [] } });
