@@ -14,6 +14,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(base_dir, 'dat
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app) 
+
+@app.route("/")
+def home():
+    return "Backend running 🚀"
 db.init_app(app)
 
 # Create tables if not exist
