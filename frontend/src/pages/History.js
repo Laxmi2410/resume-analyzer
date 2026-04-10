@@ -10,8 +10,7 @@ function History() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        // ✅ FIXED BASE URL
-        const apiUrl = "https://resume-analyzer.onrender.com";
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
         const res = await axios.get(`${apiUrl}/api/history`);
 

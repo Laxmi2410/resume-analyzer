@@ -49,16 +49,15 @@ function Upload() {
     formData.append('job_description', jd);
 
     try {
-      // ✅ FIXED BASE URL (no duplication issue)
-      const apiUrl = "https://resume-analyzer.onrender.com";
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
       const response = await axios.post(
-  "https://resume-analyzer.onrender.com/api/analyze",
-  formData,
-  {
-    headers: { "Content-Type": "multipart/form-data" }
-  }
-);
+        `${apiUrl}/api/analyze`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" }
+        }
+      );
 
 console.log(response.data);
 
