@@ -1,14 +1,6 @@
-import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import re
-
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    import spacy.cli
-    spacy.cli.download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
 
 # Categorized Skill Database
 SKILLS_DB = {
@@ -24,9 +16,9 @@ def clean_text(text):
     return text.lower()
 
 def extract_skills_categorized(text):
-    doc = nlp(text.lower())
     text_lower = text.lower()
-    
+    words = set(text_lower.split())
+
     extracted = {
         "languages": set(),
         "frameworks": set(),
@@ -34,19 +26,19 @@ def extract_skills_categorized(text):
         "data_ai": set(),
         "soft_skills": set()
     }
-    
-    # Check tokens
-    for token in doc:
-        for category, skills in SKILLS_DB.items():
-            if token.text in skills:
-                extracted[category].add(token.text)
-                
-    # Check multi-word skills
+
+    # Single word matching
+    for category, skills in SKILLS_DB.items():
+        for skill in skills:
+            if " " not in skill and skill in words:
+                extracted[category].add(skill)
+
+    # Multi-word matching
     for category, skills in SKILLS_DB.items():
         for skill in skills:
             if " " in skill and skill in text_lower:
                 extracted[category].add(skill)
-                
+
     return extracted
 
 def analyze_resume_vs_jd(resume_text, jd_text):
@@ -59,9 +51,9 @@ def analyze_resume_vs_jd(resume_text, jd_text):
         vectors = vectorizer.fit_transform([clean_jd, clean_resume])
         similarity = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
     except ValueError:
-        similarity = 0.0 # Handle empty text edge cases
+        similarity = 0.0  # Handle empty text
     
-    # Extract categorized
+    # Extract categorized skills
     resume_skills = extract_skills_categorized(resume_text)
     jd_skills = extract_skills_categorized(jd_text)
     
@@ -85,23 +77,23 @@ def analyze_resume_vs_jd(resume_text, jd_text):
         total_jd_skills += len(j_set)
         total_matched_skills += len(matching)
         
-        # Calculate percentage for radar chart
+        # Radar chart percentage
         if len(j_set) > 0:
             pct = int((len(matching) / len(j_set)) * 100)
         else:
-            pct = 100 if len(r_set) > 0 else 0 # 100% if they have bonus skills but none required
+            pct = 100 if len(r_set) > 0 else 0
             
         radar_data.append({
             "subject": category.replace('_', ' ').title(),
             "A": pct,
             "fullMark": 100
         })
-        
-    # Calculate a custom robust requirements score
+    
+    # Requirement score
     req_score = int((total_matched_skills / total_jd_skills * 100)) if total_jd_skills > 0 else 0
     
-    # Blended score: 40% TF-IDF semantic + 60% hard skill matching
-    final_score = int(similarity * 40) + int((req_score * 0.6))
+    # Final blended score
+    final_score = int(similarity * 40) + int(req_score * 0.6)
     
     return {
         "match_score": min(final_score, 100),
