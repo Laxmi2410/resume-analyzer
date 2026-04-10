@@ -1,3 +1,10 @@
+from pyresparser import ResumeParser
+import nltk
+
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from models import db, AnalysisHistory
@@ -6,8 +13,6 @@ from nlp_processor import analyze_resume_vs_jd
 import io
 import json
 import os
-import nltk
-nltk.download('stopwords')
 
 from nltk.corpus import stopwords
 
